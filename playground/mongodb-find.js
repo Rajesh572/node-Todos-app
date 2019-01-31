@@ -1,6 +1,7 @@
 const {MongoClient,ObjectID} =require('mongodb');
+const config=require('../config');
 
-MongoClient.connect('mongodb://localhost:27017/TodoApp',{ useNewUrlParser: true },(err,client)=>{
+MongoClient.connect(config.dbUrl,{ useNewUrlParser: true },(err,client)=>{
 
     if(err) {
         console.log("unable to connect MongoDB server");

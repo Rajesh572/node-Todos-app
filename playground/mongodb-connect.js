@@ -1,8 +1,9 @@
 var MongoClient=require('mongodb').MongoClient;
 var assert=require('assert');
+var config=require('../config')
 
-var dbUrl = 'mongodb://localhost:27017/TodoApp';
-MongoClient.connect(dbUrl,{ useNewUrlParser: true },(err,client)=>{
+
+MongoClient.connect(config.dbUrl,{ useNewUrlParser: true },(err,client)=>{
     if(err) {
         console.log("unable to connect MongoDB server");
     } 
