@@ -12,10 +12,6 @@ User.findById('5c53d3c56294993328b31b5a').then((doc)=>{
     console.log(error);
 });
 
-
-
-
-
 /* var id='5c5416306b14f4258c2e70c1';
 
 if(!ObjectID.isValid(id)){
