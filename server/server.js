@@ -1,8 +1,8 @@
 var express=require('express');
 var bodyParser=require('body-parser');
 const {ObjectID}=require('mongodb');
+const _=require('lodash');
 var {mongoose}=require('./db/mongoose');
-var config=require('../config');
 var {Todo}=require('./models/todo');
 var {User}=require('./models/user');
 
@@ -46,6 +46,69 @@ app.get('/todos/:id',(req,res)=>{
         res.send({doc});
     }).catch((e)=>
     res.status(404).send(e));
+});
+
+app.delete('/todos/:id',(req,res)=>{
+    var id=req.params.id;
+
+    if(!ObjectID.isValid(id)){
+        res.sendStatus(404);
+    }
+    Todo.findById(id).then((todo)=>{
+        if(!todo){
+          res.sendStatus(404);
+        }
+        Todo.findByIdAndRemove(id).then((todo)=>{
+            if(!todo){
+                res.sendStatus(404);
+            }
+            res.send({todo});
+        });
+    }).catch((e)=>{
+        res.status(404).send(e)
+    });
+});
+
+app.patch('/todos/:id',(req,res)=>{
+    var id=req.params.id;
+    var body= _.pick(req.body,['text','completed']);
+
+    
+    if(!ObjectID.isValid(id)){
+        res.sendStatus(404);
+    }
+
+    if(_.isBoolean(body.completed) && body.completed){
+        body.completedAt=new Date().getTime(); 
+    }
+    else{
+        body.completed=false;
+        body.completedAt=null;
+    }
+        Todo.findByIdAndUpdate(id,{$set:body},{new:true}).then((todo)=>{
+            if(!todo){
+                res.sendStatus(404);
+            }
+            res.send({todo});
+
+        }).catch((e)=>{
+            res.status(404).send(e);
+        });
+   
+});
+
+app.post('/users',(req,res)=>{
+    var body = _.pick(req.body,['email','password']);
+    var user=new User(body);
+    user.save().then((user)=>{
+        return user.generateAuthToken();
+        // res.send(doc);
+    }).then(token=>{
+        res.header('x-auth',token).send(user);  
+    })
+    .catch((e)=>{
+        res.status(404).send(e);
+    })
 });
 
 app.listen(port,()=>{
