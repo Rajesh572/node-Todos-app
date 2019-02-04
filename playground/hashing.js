@@ -7,7 +7,7 @@ var hashedpwd='$2a$10$7cXBwHRsgFsK3tasaXmhROe4NcvowfwmJ899xrbLKN.KEnniA01wC';
 
 bcrypt.genSalt(10,(err,salt)=>{
     bcrypt.hash(password,salt,(err,hash)=>{
-        //console.log(hash);
+        console.log(salt);
     });
 });
 bcrypt.compare(password+'1',hashedpwd,(err,res)=>{
